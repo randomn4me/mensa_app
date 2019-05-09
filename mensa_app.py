@@ -61,10 +61,12 @@ def pretty_print(list):
 
 
 ap = argparse.ArgumentParser()
-ap.add_argument('-i', '--id')
-ap.add_argument('-m', '--meals', action='store_true')
-ap.add_argument('-c', '--city')
-ap.add_argument('args', nargs=argparse.REMAINDER)
+ap.add_argument('-i', '--id', help='Get infos about mensa with given id')
+ap.add_argument('-m', '--meals', action='store_true',
+        help='Requires -i <id>: prints meals for today')
+ap.add_argument('-c', '--city', help='Get infos about mensas in the given city')
+ap.add_argument('name', nargs=argparse.REMAINDER,
+        help='Get infos about mensas filtered by the given name')
 
 args = ap.parse_args()
 
@@ -85,8 +87,10 @@ elif args.city:
     for dp in filter(canteens, 'city', args.city):
         pretty_print(dp.items())
         print(SEPARATOR)
-else:
+elif args.name:
     canteens = get_canteens()
-    for dp in filter(canteens, 'name', ' '.join(args.args)):
+    for dp in filter(canteens, 'name', ' '.join(args.name)):
         pretty_print(dp.items())
         print(SEPARATOR)
+else:
+    ap.print_help()
